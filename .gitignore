@@ -2,4 +2,6 @@
 *.log
 target
 .idea
-.metals
+.metals/**
+.bloop/**
+.vscode/**

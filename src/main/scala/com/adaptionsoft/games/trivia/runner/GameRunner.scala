@@ -31,9 +31,9 @@ object GameRunner {
 
   def test(args: Array[String]): String = {
     var aGame = new Game();
-    aGame.add("Chet")
-    aGame.add("Pat")
-    aGame.add("Sue")
+    aGame.addPlayer("Chet")
+    aGame.addPlayer("Pat")
+    aGame.addPlayer("Sue")
 
     var rand: Random = new Random(1);
 

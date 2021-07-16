@@ -32,7 +32,7 @@ class Game {
 
   def isPlayable: Boolean = (howManyPlayers >= 2)
 
-  def add(playerName: String): Boolean = {
+  def addPlayer(playerName: String): Boolean = {
     players.add(playerName)
     places(howManyPlayers) = 0
     purses(howManyPlayers) = 0
@@ -49,11 +49,8 @@ class Game {
     outputString = outputString.concat("They have rolled a " + roll + "\n")
     if (inPenaltyBox(currentPlayer)) {
       if (roll % 2 != 0) {
-        isGettingOutOfPenaltyBox = true
-        outputString = outputString.concat(players.get(currentPlayer) + " is getting out of the penalty box" + "\n")
-        places(currentPlayer) = places(currentPlayer) + roll
-        if (places(currentPlayer) > 11) places(currentPlayer) = places(currentPlayer) - 12
-        outputString = outputString.concat(players.get(currentPlayer) + "'s new location is " + places(currentPlayer) + "\n")
+        playerExitsPenaltyBox
+        playerMovesLocation(roll)
         outputString = outputString.concat("The category is " + currentCategory + "\n")
         askQuestion
       }
@@ -63,9 +60,7 @@ class Game {
       }
     }
     else {
-      places(currentPlayer) = places(currentPlayer) + roll
-      if (places(currentPlayer) > 11) places(currentPlayer) = places(currentPlayer) - 12
-      outputString = outputString.concat(players.get(currentPlayer) + "'s new location is " + places(currentPlayer) + "\n")
+      playerMovesLocation(roll)
       outputString = outputString.concat("The category is " + currentCategory + "\n")
       askQuestion
     }
@@ -144,4 +139,15 @@ class Game {
   }
 
   private def didPlayerWin: Boolean = !(purses(currentPlayer) == 6)
+
+  private def playerExitsPenaltyBox: Unit = {
+        isGettingOutOfPenaltyBox = true
+        outputString = outputString.concat(players.get(currentPlayer) + " is getting out of the penalty box" + "\n")
+  }
+
+  private def playerMovesLocation(roll: Int): Unit = {
+    places(currentPlayer) = places(currentPlayer) + roll
+    if (places(currentPlayer) > 11) places(currentPlayer) = places(currentPlayer) - 12
+    outputString = outputString.concat(players.get(currentPlayer) + "'s new location is " + places(currentPlayer) + "\n")
+  }
 }
