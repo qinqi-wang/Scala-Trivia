@@ -67,20 +67,11 @@ class Game {
   }
 
   private def askQuestion: Unit = {
-    if (currentCategory == "Pop") {
-      var removedPop = popQuestions.removeFirst()
-      outputString = outputString.concat(removedPop + "\n")
-    }
-    if (currentCategory == "Science") {
-      var removedScience = scienceQuestions.removeFirst()
-      outputString = outputString.concat(removedScience + "\n")
-    }
-    if (currentCategory == "Sports") {
-      var removedSports = sportsQuestions.removeFirst()
-      outputString = outputString.concat(removedSports + "\n")
-    }
-    if (currentCategory == "Rock") {
-      outputString = outputString.concat(rockQuestions.removeFirst + "\n")
+    currentCategory match {
+      case "Pop" => popQuestions = removeCategory(popQuestions)
+      case "Science" => scienceQuestions = removeCategory(scienceQuestions)
+      case "Sports" => sportsQuestions = removeCategory(sportsQuestions)
+      case "Rock" => outputString = outputString.concat(rockQuestions.removeFirst + "\n")
     }
   }
 
@@ -103,29 +94,10 @@ class Game {
 
   def wasCorrectlyAnswered: Boolean = {
     if (inPenaltyBox(currentPlayer)) {
-      if (isGettingOutOfPenaltyBox) {
-        outputString = outputString.concat("Answer was correct!!!!" + "\n")
-        purses(currentPlayer) += 1
-        outputString = outputString.concat(players.get(currentPlayer) + " now has " + purses(currentPlayer) + " Gold Coins." + "\n")
-        var winner: Boolean = didPlayerWin
-        currentPlayer += 1
-        if (currentPlayer == players.size) currentPlayer = 0
-        winner
-      }
-      else {
-        currentPlayer += 1
-        if (currentPlayer == players.size) currentPlayer = 0
-        true
-      }
+      return handleCorrectAnswerPenaltyBox
     }
     else {
-      outputString = outputString.concat("Answer was corrent!!!!" + "\n")
-      purses(currentPlayer) += 1
-      outputString = outputString.concat(players.get(currentPlayer) + " now has " + purses(currentPlayer) + " Gold Coins." + "\n")
-      var winner: Boolean = didPlayerWin
-      currentPlayer += 1
-      if (currentPlayer == players.size) currentPlayer = 0
-      winner
+      return handleCorrectAnswer
     }
   }
 
@@ -149,5 +121,38 @@ class Game {
     places(currentPlayer) = places(currentPlayer) + roll
     if (places(currentPlayer) > 11) places(currentPlayer) = places(currentPlayer) - 12
     outputString = outputString.concat(players.get(currentPlayer) + "'s new location is " + places(currentPlayer) + "\n")
+  }
+
+  private def removeCategory(category: LinkedList[String]): LinkedList[String] = {
+    var removedItem = category.removeFirst()
+    outputString = outputString.concat(removedItem + "\n")
+    return category
+  }
+
+  private def handleCorrectAnswerPenaltyBox: Boolean = {
+    if (isGettingOutOfPenaltyBox) {
+        outputString = outputString.concat("Answer was correct!!!!" + "\n")
+        purses(currentPlayer) += 1
+        outputString = outputString.concat(players.get(currentPlayer) + " now has " + purses(currentPlayer) + " Gold Coins." + "\n")
+        var winner: Boolean = didPlayerWin
+        currentPlayer += 1
+        if (currentPlayer == players.size) currentPlayer = 0
+        winner
+      }
+      else {
+        currentPlayer += 1
+        if (currentPlayer == players.size) currentPlayer = 0
+        true
+      }
+  }
+
+  private def handleCorrectAnswer: Boolean = {
+    outputString = outputString.concat("Answer was corrent!!!!" + "\n")
+    purses(currentPlayer) += 1
+    outputString = outputString.concat(players.get(currentPlayer) + " now has " + purses(currentPlayer) + " Gold Coins." + "\n")
+    var winner: Boolean = didPlayerWin
+    currentPlayer += 1
+    if (currentPlayer == players.size) currentPlayer = 0
+    winner
   }
 }
